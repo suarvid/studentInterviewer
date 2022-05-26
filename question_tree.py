@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from question_asker import QuestionAsker
 import speech_recognition as sr
 import sys
-
 
 class Question:
     def __init__(self, data, correct_answer_tokens, weight=1.0):
@@ -15,17 +13,15 @@ class Question:
         self.correct_answer_tokens = correct_answer_tokens
         self.recognizer = sr.Recognizer()
 
-    def add_left_child(self, leftChildData, leftChildWeight=1.0):
-        leftChild = Node(leftChildData, leftChildWeight)
+    def add_left_child(self, leftChild):
         self.left = leftChild
 
-    def add_right_child(self, rightChildData, rightChildWeight=1.0):
-        rightChild = Node(rightChildData, rightChildWeight)
+    def add_right_child(self, rightChild):
         self.right = rightChild
 
-    def evaluate():
-        response = self.ask_question(self.data)
-        score = self.evaluate_response()
+    def evaluate(self):
+        response = self.ask_question()
+        score = self.evaluate_response(response.lower())
         self.answer_score += score * self.weight
         if score > 0 and self.left is not None:
             self.left.evaluate()
@@ -36,10 +32,11 @@ class Question:
 
     def ask_question(self):
         with sr.Microphone() as source:
-            print("Say something!")
+            print("QUESTION:")
+            print(self.data)
             audio = self.recognizer.listen(source)
             try:
-                return self.recognizer.recognize_sphinx(audio)
+                return self.recognizer.recognize_google(audio)
             except sr.UnknownValueError:
                 return "Unknown"
             except sr.RequestError as e:
@@ -49,7 +46,9 @@ class Question:
         response_tokens = response.split()
         for token in response_tokens:
             if token in self.correct_answer_tokens:
+                print(f"GOOD RESPONSE: {response}")
                 return 1
+        print(f"BAD RESPONSE: {response}")
         return -1
 
     def get_tree_score(self):

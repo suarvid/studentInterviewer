@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# TODO: Make this singleton pattern
-
+# TODO: Make this singleton pattern, maybe
 
 class QuestionAsker:
     __instance = None

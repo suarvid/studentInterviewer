@@ -3,7 +3,8 @@
 
 
 class Topic:
-    def __init__(self, question_trees):
+    def __init__(self, name, question_trees):
+        self.name = name
         self.q_trees = question_trees
         self.current_q_tree_index = 0
 
