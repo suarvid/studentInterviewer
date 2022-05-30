@@ -3,6 +3,7 @@
 
 from question_tree import Question
 from topic import Topic
+from furhat_remote_api import FurhatRemoteAPI
 
 def generate_weekday_topic():
     q1 = Question("Which is the second day of the week?", ["tuesday"])
@@ -14,17 +15,17 @@ def generate_weekday_topic():
     q2.add_left_child(q3)
     q2.add_right_child(q3)
     q3.add_left_child(q4)
-    return Topic("Weekdays", [q1])
+    return Topic("Weekdays", 6.0, [q1])
 
 def generate_alphabet_topic():
     q1 = Question("How many letters does the english alphabet have?", ["26" ,"twenty six", "twenty", "six"])
-    q2 = Question("Which is the last letter of the english alphabet?", ["zed", "z", "zee", "sea", "c", "see", "sed", "set", "said", "sent"])
-    q3 = Question("Which is the 26th letter of the english alphabet?", ["zed", "z", "zee", "sea", "c", "see", "sed", "set", "said", "sent"], [(q1, -3.0), (q2, -3.0)])
+    q2 = Question("Which is the last letter of the english alphabet?", ["zed", "zedd", "z", "zee", "sea", "c", "see", "sed", "set", "said", "sent"])
+    q3 = Question("Which is the 26th letter of the english alphabet?", ["zed", "zedd", "z", "zee", "sea", "c", "see", "sed", "set", "said", "sent"], [(q1, -3.0), (q2, -3.0)])
     q1.add_left_child(q2)
     q1.add_right_child(q2)
     q2.add_left_child(q3)
     q2.add_right_child(q3)
-    return Topic("Alphabet", [q1])
+    return Topic("Alphabet", 6.0, [q1])
 
 
 # Read in questions, answers and follow-up questions from file here
@@ -36,10 +37,13 @@ def generate_topics():
 
 if __name__ == "__main__":
     topics = generate_topics()
+    furhat = FurhatRemoteAPI("localhost")
+    furhat.set_voice(name="Matthew")
+    furhat.attend(user="CLOSEST")
     for topic in topics:
-        topic.evaluate_topic()
+        topic.evaluate_topic(furhat)
     total_score = 0.0
-    threshold = 12.0
+    threshold = 5.0
     for topic in topics:
         print(f"SCORE FOR TOPIC {topic.name}:")
         topic_score = topic.get_topic_score()

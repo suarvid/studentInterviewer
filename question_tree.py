@@ -30,9 +30,9 @@ class Question:
     def add_right_child(self, rightChild):
         self.right = rightChild
 
-    def evaluate(self):
-        response = self.ask_question()
-        score = self.evaluate_response(response.lower())
+    def evaluate(self, furhat):
+        response = self.ask_question(furhat)
+        score = self.evaluate_response(response)
         self.answer_score += score * self.weight
         if score > 0 and self.left is not None:
             self.left.evaluate()
@@ -41,18 +41,12 @@ class Question:
         else:
             return  # Will move on to the next tree in the calling function
 
-    def ask_question(self):
-        with sr.Microphone() as source:
-            print("QUESTION:")
-            print(self.data)
-            time.sleep(1.0)
-            audio = self.recognizer.listen(source)
-            try:
-                return self.recognizer.recognize_google(audio)
-            except sr.UnknownValueError:
-                return "Unknown"
-            except sr.RequestError as e:
-                print(f"Sphinx error: {e}")
+    def ask_question(self, furhat):
+        furhat.say(text=self.data)
+        time.sleep(2.0)
+        result = furhat.listen()
+        print(result, file=sys.stderr)
+        return result.message
 
     def evaluate_response(self, response):
         response_tokens = response.split()

@@ -3,8 +3,10 @@
 
 
 class Topic:
-    def __init__(self, name, question_trees):
+    def __init__(self, name, threshold, question_trees):
         self.name = name
+        self.threshold = threshold
+        self.score = 0
         self.q_trees = question_trees
         self.current_q_tree_index = 0
 
@@ -15,9 +17,10 @@ class Topic:
             return (True, self.q_trees[self.current_q_tree_index])
         return (False, None)
 
-    def evaluate_topic(self):
+    def evaluate_topic(self, furhat):
         for q_tree in self.q_trees:
-            q_tree.evaluate()
+            q_tree.evaluate(furhat)
+        self.score = get_topic_score()
 
     def get_topic_score(self):
         score = 0.0
